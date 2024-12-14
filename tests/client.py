@@ -1,7 +1,9 @@
 import httpx
 
 async def make_request():
-    url = "http://127.0.0.1:8095/predict/"
+    # url = "http://127.0.0.1:8095/predict/"
+    url = "http://172.19.193.24/predict/"
+    # url = "http://172.19.193.24/"
 
     
     payload = {"kwargs": {
