@@ -65,10 +65,10 @@ def predict_parkinsons(kwargs):
     
     if prediction[0] == 1:
         print(f"The model predicts that the person has Parkinson's disease with a probability of {probability[0][1]:.2f}.")
-        resultant_dict["has_parkinson"] = True
+        resultant_dict["has_parkinson"] = 1
         resultant_dict["confidence"] = float(round(probability[0][1], 3))
     else:
-        resultant_dict["has_parkinson"] = False
+        resultant_dict["has_parkinson"] = 0
         resultant_dict["confidence"] = float(round(probability[0][0], 3))
         print(f"The model predicts that the person does not have Parkinson's disease with a probability of {probability[0][0]:.2f}.")
     

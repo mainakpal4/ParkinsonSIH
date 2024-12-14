@@ -2,7 +2,8 @@ import os
 import uvicorn
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from src.infer_model import predict_parkinsons
+# from src.infer_model import predict_parkinsons
+from src.infer_model_fast import predict_parkinsons 
 
 app = FastAPI()
 
