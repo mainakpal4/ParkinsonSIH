@@ -1,11 +1,9 @@
-// const fetch = require('node-fetch'); // Import fetch for Node.js
+// const fetch = require('node-fetch'); // Uncomment if using Node.js without native fetch support
 
 async function makeRequest(tremor, slowness, rigidity, loss_of_smell, family_history, num_ancestors, male_ancestors, past_head_injury) {
-    const url = "http://127.0.0.1:8095/predict/";
+    const url = "https://2086-103-23-29-121.ngrok-free.app/predict";
     const payload = {
         kwargs: {
-            // feature1: feature1,
-            // feature2: feature2
             tremor: tremor,
             slowness: slowness,
             rigidity: rigidity,
@@ -21,7 +19,8 @@ async function makeRequest(tremor, slowness, rigidity, loss_of_smell, family_his
         const response = await fetch(url, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "ngrok-skip-browser-warning": "true" // Add this header with any value
             },
             body: JSON.stringify(payload)
         });
@@ -38,6 +37,7 @@ async function makeRequest(tremor, slowness, rigidity, loss_of_smell, family_his
 }
 
 // Sample call to the function
-makeRequest(1, 1, 1, 1, 1, 1, 1, 1,);
+makeRequest(1, 1, 1, 1, 1, 1, 1, 1);
+
 
 // {/* <script src="client.js"></script> */}

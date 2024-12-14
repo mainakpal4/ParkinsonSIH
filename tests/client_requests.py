@@ -1,9 +1,11 @@
 import requests
 
 def make_request():
-    url = "http://127.0.0.1:8095/predict/"
-    # url = "http://172.19.193.24/predict/"
-    # url = "http://172.19.193.24/"
+    url = "https://2086-103-23-29-121.ngrok-free.app/predict"
+
+    headers = {
+        "ngrok-skip-browser-warning": "true"  # Add this header with any value
+    }
 
     payload = {
         "kwargs": {
@@ -19,7 +21,7 @@ def make_request():
     }  # Example payload
 
     try:
-        response = requests.post(url, json=payload)
+        response = requests.post(url, json=payload, headers=headers)  # Include headers
         if response.status_code == 200:
             print("Response:", response.json())
         else:
