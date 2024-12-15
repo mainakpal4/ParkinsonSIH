@@ -1,7 +1,8 @@
 import requests
 
 def make_request():
-    url = "https://2086-103-23-29-121.ngrok-free.app/predict"
+    # url = "https://2086-103-23-29-121.ngrok-free.app/predict"
+    url = "https://parkinsonsih.onrender.com/predict/"
 
     headers = {
         "ngrok-skip-browser-warning": "true"  # Add this header with any value

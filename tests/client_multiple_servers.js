@@ -13,7 +13,7 @@ async function makeRequest(
     const urls = [
         // "https://6174-103-23-29-122.ngrok-free.app/predict",
         // "https://2086-103-23-29-121.ngrok-free.app/predict",
-        "https://parkinsonsih.onrender.com/predict",
+        "https://parkinsonsih.onrender.com/predict/",
         // Add more URLs here as needed
     ];
 

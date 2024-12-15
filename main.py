@@ -37,4 +37,4 @@ if __name__ == "__main__":
     # PORT = 8095
     PORT = int(os.getenv("PORT", "10000"))
     uvicorn.run("main:app", port=PORT, host="0.0.0.0")
-    # uvicorn main:app --host 0.0.0.0 --port 10000
+    # uvicorn main:app --host 0.0.0.0 --port $PORT

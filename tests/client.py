@@ -2,7 +2,8 @@ import httpx
 import asyncio
 
 async def make_request():
-    url = "https://2086-103-23-29-121.ngrok-free.app/predict"
+    # url = "https://2086-103-23-29-121.ngrok-free.app/predict"
+    url = "https://parkinsonsih.onrender.com/predict/"
 
     headers = {
         "ngrok-skip-browser-warning": "true"  # Add this header with any value
@@ -21,7 +22,7 @@ async def make_request():
         }
     }  # Example payload
 
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(http1=True, timeout=10) as client:
         response = await client.post(url, json=payload, headers=headers)  # Include headers
         if response.status_code == 200:
             print("Response:", response.json())
