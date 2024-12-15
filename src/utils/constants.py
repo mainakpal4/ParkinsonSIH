@@ -1,4 +1,3 @@
 PREDICTIONS_CSV = "data/parkinsons_predictions.csv"
 INPUT_PARAMETERS = ["tremor", "slowness", "rigidity", "loss_of_smell", "family_history", "num_ancestors", "male_ancestors", "past_head_injury"]
-num_ancestors : 0-5,
-male_ancestors : 0-5,
+OUTPUT_PARAMETERS = ["has_parkinson", "confidence"]

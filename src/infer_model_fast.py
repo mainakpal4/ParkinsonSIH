@@ -29,9 +29,9 @@ result = predict_parkinsons({
     "rigidity": 1,
     "loss_of_smell": 1,
     "family_history": 1,
-    "num_ancestors": 1,
-    "male_ancestors": 1,
-    "past_head_injury": 1
+    "num_ancestors": 5,
+    "male_ancestors": 2,
+    "past_head_injury": 1,
 })
 print(result)
 
