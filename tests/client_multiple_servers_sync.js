@@ -12,6 +12,7 @@ function makeRequestSync(
     past_head_injury
 ) {
     const urls = [
+        "http://localhost:10000/predict/",
         "https://parkinsonsih.onrender.com/predict/",
     ];
 
