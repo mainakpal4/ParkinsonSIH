@@ -16,5 +16,12 @@ Todos:
 - Popup doesnt look nice - need to improve
 - Integrate `data/parkinsons_predictions.csv` in your app.
 
+Check the main.py last parts::
 
+    # PORT = 8095
+    PORT = int(os.getenv("PORT", "10000"))
+    uvicorn.run("main:app", port=PORT, host="0.0.0.0")
+    # uvicorn main:app --host 0.0.0.0 --port 10000
+
+If needed, change the ports as required
 ```
