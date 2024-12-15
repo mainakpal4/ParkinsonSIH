@@ -23,29 +23,61 @@ from src.utils.constants import INPUT_PARAMETERS, PREDICTIONS_CSV
 #                 }
 #     return None  # Return None if no match is found
 # Load the CSV file into a pandas DataFrame
-df = pd.read_csv(PREDICTIONS_CSV)
+# df = pd.read_csv(PREDICTIONS_CSV)
 
-# Optimized function using pandas
+# # Optimized function using pandas
+# def predict_parkinsons(input_args):
+#     """
+#     Retrieve cached predictions using pandas for faster lookups.
+
+#     :param input_args: A dictionary of input parameters.
+#     :return: A dictionary with output parameters ("has_parkinson" and "confidence").
+#     """
+
+#     # Filter rows matching the input arguments
+#     query = " & ".join([f"{key} == {value}" for key, value in input_args.items()])
+#     match = df.query(query)
+
+#     if not match.empty:
+#         row = match.iloc[0]  # Take the first matching row
+#         return {
+#             "has_parkinson": int(row["has_parkinson"]),
+#             "confidence": float(row["confidence"]),
+#         }
+
+#     raise ValueError("Input combination not found in cached predictions.")
+
+
+import pandas as pd
+
+# Preload the CSV into a dictionary for O(1) lookups
+def preload_predictions(csv_path):
+    df = pd.read_csv(csv_path)
+    # Create a dictionary where the key is a tuple of input values
+    predictions_dict = {
+        tuple(row[INPUT_PARAMETERS]): {
+            "has_parkinson": row["has_parkinson"],
+            "confidence": row["confidence"],
+        }
+        for _, row in df.iterrows()
+    }
+    return predictions_dict
+
+# Global variable to store preloaded predictions
+predictions_cache = preload_predictions(PREDICTIONS_CSV)
+
 def predict_parkinsons(input_args):
     """
-    Retrieve cached predictions using pandas for faster lookups.
+    Retrieve cached predictions using a dictionary for O(1) lookups.
 
     :param input_args: A dictionary of input parameters.
     :return: A dictionary with output parameters ("has_parkinson" and "confidence").
     """
-
-    # Filter rows matching the input arguments
-    query = " & ".join([f"{key} == {value}" for key, value in input_args.items()])
-    match = df.query(query)
-
-    if not match.empty:
-        row = match.iloc[0]  # Take the first matching row
-        return {
-            "has_parkinson": int(row["has_parkinson"]),
-            "confidence": float(row["confidence"]),
-        }
-
-    raise ValueError("Input combination not found in cached predictions.")
+    key = tuple(input_args[param] for param in INPUT_PARAMETERS)
+    if key in predictions_cache:
+        return predictions_cache[key]
+    else:
+        raise ValueError("Input combination not found in cached predictions.")
 
 # Example usage
 result = predict_parkinsons({
