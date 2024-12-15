@@ -2,6 +2,7 @@
 
 async function makeRequest(tremor, slowness, rigidity, loss_of_smell, family_history, num_ancestors, male_ancestors, past_head_injury) {
     const url = "https://2086-103-23-29-121.ngrok-free.app/predict";
+    // "https://6174-103-23-29-122.ngrok-free.app/predict"
     const payload = {
         kwargs: {
             tremor: tremor,
