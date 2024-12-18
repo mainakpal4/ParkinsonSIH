@@ -177,102 +177,104 @@
     </div>
 
     <script>
+        // Initialize the hashmap for cached predictions
+        const predictionsCache = new Map();
+    
+        // CSV file path (adjust as needed)
+        const csvFilePath = "data/parkinsons_predictions.csv";
+    
+        // Load predictions from the CSV file into the hashmap
+        async function loadPredictionsCache() {
+            try {
+                const response = await fetch(csvFilePath);
+                if (!response.ok) throw new Error(`Failed to load CSV file: ${response.statusText}`);
+                
+                const csvText = await response.text();
+                const rows = csvText.split("\n").slice(1); // Skip the header row
+    
+                for (const row of rows) {
+                    const [tremor, slowness, rigidity, loss_of_smell, family_history, num_ancestors, male_ancestors, past_head_injury, has_parkinson, confidence] =
+                        row.split(",").map((value) => value.trim());
+    
+                    const key = `${tremor},${slowness},${rigidity},${loss_of_smell},${family_history},${num_ancestors},${male_ancestors},${past_head_injury}`;
+                    predictionsCache.set(key, { has_parkinson: parseInt(has_parkinson), confidence: parseFloat(confidence) });
+                }
+                console.log("Predictions cache loaded successfully.");
+            } catch (error) {
+                console.error("Error loading predictions cache:", error);
+            }
+        }
+    
+        // Async lookup function
+        async function predictParkinsons(inputArgs) {
+            const key = [
+                inputArgs.tremor,
+                inputArgs.slowness,
+                inputArgs.rigidity,
+                inputArgs.loss_of_smell,
+                inputArgs.family_history,
+                inputArgs.num_ancestors,
+                inputArgs.male_ancestors,
+                inputArgs.past_head_injury,
+            ].join(",");
+    
+            if (predictionsCache.has(key)) {
+                return predictionsCache.get(key);
+            } else {
+                throw new Error("Input combination not found in cached predictions.");
+            }
+        }
+    
+        // Submit form handler
         async function submitForm() {
             const form = document.getElementById("parkinsonsForm");
-
+    
             if (!form.checkValidity()) {
                 form.reportValidity();
                 return;
             }
-
-            const numAncestors = parseInt(document.getElementById("numAncestors").value);
-            const numMaleAncestors = parseInt(document.getElementById("numMaleAncestors").value);
-
-            if (numAncestors > 5 || numMaleAncestors > 5) {
-                alert("The number of ancestors or male ancestors cannot be greater than 5.");
-                return;
-            }
-
-            const tremor = parseInt(document.getElementById("tremor").value);
-            const slowness = parseInt(document.getElementById("slowness").value);
-            const rigidity = parseInt(document.getElementById("rigidity").value);
-            const lossOfSmell = parseInt(document.getElementById("lossOfSmell").value);
-            const familyHistory = parseInt(document.getElementById("familyHistory").value);
-            const pastHeadInjury = parseInt(document.getElementById("pastHeadInjury").value);
-
-            const result = await makeRequest(
-                tremor,
-                slowness,
-                rigidity,
-                lossOfSmell,
-                familyHistory,
-                numAncestors,
-                numMaleAncestors,
-                pastHeadInjury
-            );
-
-            if (result) {
-                alert("Prediction: " + JSON.stringify(result));
-            } else {
-                alert("Failed to get a prediction. Please try again later.");
-            }
-        }
-
-        async function makeRequest(
-            tremor,
-            slowness,
-            rigidity,
-            loss_of_smell,
-            family_history,
-            num_ancestors,
-            male_ancestors,
-            past_head_injury
-        ) {
-            const urls = [
-                "https://6174-103-23-29-122.ngrok-free.app/predict",
-                "https://2086-103-23-29-121.ngrok-free.app/predict",
-            ];
-
-            const payload = {
-                kwargs: {
-                    tremor: tremor,
-                    slowness: slowness,
-                    rigidity: rigidity,
-                    loss_of_smell: loss_of_smell,
-                    family_history: family_history,
-                    num_ancestors: num_ancestors,
-                    male_ancestors: male_ancestors,
-                    past_head_injury: past_head_injury,
-                },
+    
+            const inputArgs = {
+                tremor: parseInt(document.getElementById("tremor").value),
+                slowness: parseInt(document.getElementById("slowness").value),
+                rigidity: parseInt(document.getElementById("rigidity").value),
+                loss_of_smell: parseInt(document.getElementById("lossOfSmell").value),
+                family_history: parseInt(document.getElementById("familyHistory").value),
+                num_ancestors: parseInt(document.getElementById("numAncestors").value),
+                male_ancestors: parseInt(document.getElementById("numMaleAncestors").value),
+                past_head_injury: parseInt(document.getElementById("pastHeadInjury").value),
             };
-
-            for (const url of urls) {
-                try {
-                    const response = await fetch(url, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "ngrok-skip-browser-warning": "true",
-                        },
-                        body: JSON.stringify(payload),
-                    });
-
-                    if (response.ok) {
-                        const data = await response.json();
-                        console.log("Response from", url, ":", data);
-                        return data;
-                    } else {
-                        console.error("Error from", url, ":", response.status, await response.text());
-                    }
-                } catch (error) {
-                    console.error("Fetch failed for", url, ":", error);
+    
+            try {
+                const result = await predictParkinsons(inputArgs);
+                alert(`Prediction: ${JSON.stringify(result)}`);
+            } catch (error) {
+                console.error(error.message);
+                alert("Prediction not found in cache. Attempting remote lookup...");
+    
+                const remoteResult = await makeRequest(
+                    inputArgs.tremor,
+                    inputArgs.slowness,
+                    inputArgs.rigidity,
+                    inputArgs.loss_of_smell,
+                    inputArgs.family_history,
+                    inputArgs.num_ancestors,
+                    inputArgs.male_ancestors,
+                    inputArgs.past_head_injury
+                );
+    
+                if (remoteResult) {
+                    alert("Remote Prediction: " + JSON.stringify(remoteResult));
+                } else {
+                    alert("Failed to get a prediction. Please try again later.");
                 }
             }
-
-            console.error("All servers failed. Unable to complete the request.");
-            return null;
         }
+    
+        // Load the predictions cache on page load
+        window.onload = loadPredictionsCache;
     </script>
+    
 
 </body>
 </html>
